@@ -1,0 +1,29 @@
+---
+- name: Ensure nexus package are installed
+  hosts: hosts
+  vars_files: ../vars.yaml
+  tasks:
+
+  - name: Ensure Nexus Repository OSS is downloaded
+    ansible.builtin.get_url:
+      url: https://download.sonatype.com/nexus/{{ nexus.major_version }}/nexus-{{ nexus.full_version }}-{{ nexus.platform }}.{{ nexus.package_type }}
+      checksum: sha256:https://download.sonatype.com/nexus/{{ nexus.major_version }}/nexus-{{ nexus.full_version }}-{{ nexus.platform }}.{{ nexus.package_type }}.sha256
+      dest: /opt
+      mode: '0755'
+
+  - name: Ensure Nexus Repository OSS package is unpacked
+    ansible.builtin.unarchive:
+      src: /opt/nexus-{{ nexus.full_version }}-{{ nexus.platform }}.{{ nexus.package_type }}
+      dest: /opt
+      remote_src: yes
+    register: unarchive_result
+  - ansible.builtin.debug:
+      msg: "{{ unarchive_result }}"
+
+  - name: Ensure Nexus Repository and Sonatype directories is owned by nexus user and group
+    ansible.builtin.file:
+      path: "{{ item }}"
+      owner: nexus
+      group: nexus
+      recurse: yes
+    with_items: ['/opt/sonatype-work', '/opt/nexus-{{ nexus.full_version }}']

@@ -1,0 +1,27 @@
+---
+- name: Ensure nexus user is present
+  hosts: hosts
+  vars_files: ../vars.yaml
+  tasks:
+
+    - name: Ensure nexus group is created
+      ansible.builtin.group:
+        name: nexus
+        state: present
+      register: create_group_result
+
+    - name: Ensure nexus user is created
+      ansible.builtin.user:
+        name: nexus
+        groups: nexus
+        append: yes
+      when: create_group_result.gid >= 1000
+      register: create_user_result
+
+    - name: Ensure to add nexus group to sudoers
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        insertafter: '^%wheel'
+        firstmatch: true
+        line: '%nexus ALL=(ALL) NOPASSWD: ALL'
+        state: present

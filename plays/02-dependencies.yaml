@@ -1,0 +1,11 @@
+---
+- name: Ensure dependency packages are installed
+  hosts: hosts
+  vars_files: ../vars.yaml
+  tasks:
+
+    - name: Ensure java (openjdk) are installed
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ dependency_packages[ansible_pkg_mgr] }}"

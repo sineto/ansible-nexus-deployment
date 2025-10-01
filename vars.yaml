@@ -1,0 +1,14 @@
+root:
+  directory: /path/to/project
+
+dependency_packages:
+  dnf:
+    - java-21-openjdk
+    - java-21-openjdk-devel
+    - tar
+
+nexus:
+  major_version: 3
+  full_version: 3.84.1-01
+  platform: linux-x86_64
+  package_type: tar.gz

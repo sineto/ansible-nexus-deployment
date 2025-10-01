@@ -1,0 +1,12 @@
+---
+- name: Main Playbook - Nexus deployment
+  hosts: hosts
+  tasks:
+    - name: Include all playbooks
+      ansible.builtin.debug:
+        msg: "Starting infrastructure deployment"
+
+- import_playbook: plays/01-prerequisites.yaml
+- import_playbook: plays/02-dependencies.yaml
+- import_playbook: plays/03-nexus.yaml
+- import_playbook: plays/04-service.yaml
